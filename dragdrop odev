@@ -1,0 +1,219 @@
+namespace drag_and_drop_ileri
+{
+    public partial class frmanaekran: Form
+    {
+        public frmanaekran()
+        {
+            InitializeComponent();
+        }
+
+        private void frmanaekran_Load(object sender, EventArgs e)
+        {
+            txtgiris.Focus();
+            lstiller.Items.Add("samsun");
+            lstiller.Items.Add("ankara");
+            lstiller.Items.Add("ordu");
+            lstiller.Items.Add("istanbul");
+
+        }
+
+        private void btnekle_Click(object sender, EventArgs e)
+        {
+            var eklenecekdegerler = txtgiris.Text;
+            lstiller.Items.Add(eklenecekdegerler);
+            txtgiris.Clear();
+            txtgiris.Focus();
+        }
+
+        private void txtgiris_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnekle_Click(sender, e);
+
+            }
+
+        }
+
+        private void btngoster_Click(object sender, EventArgs e)
+        {
+            var secilenicerik = lstiller.SelectedItems;
+            if (secilenicerik.Count <= 0)
+            {
+                MessageBox.Show("il seçimi yapılmamıştır.", "bigi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+            var mesaj = string.Empty;
+
+            foreach (var item in secilenicerik)
+            {
+                mesaj = mesaj + $"{item}\n";
+            }
+
+
+            MessageBox.Show(
+                mesaj,
+                "bilgi",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+
+        }
+
+        private void btnsil_Click(object sender, EventArgs e)
+        {
+            var secilenindesler = lstiller.SelectedIndices;
+            if (secilenindesler.Count <= 0)
+            {
+                MessageBox.Show(
+                    "lütfen silmek istediğinizi il seçimini yapınız.",
+                    "hata",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            for (int i = secilenindesler.Count - 1; i >= 0; i--)
+            {
+                lstiller.Items.RemoveAt(secilenindesler[i]);
+            }
+
+        }
+
+        private void btnaktar_Click(object sender, EventArgs e)
+        {
+            var secilenindeskler = lstiller.SelectedIndices;
+            if (secilenindeskler.Count <= 0)
+            {
+                MessageBox.Show(
+                    "aktarılacak il seciniz", "hata",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            foreach (int item in secilenindeskler)
+            {
+                lstiller2.Items.Add(lstiller.Items[item]);
+
+
+            }
+            for (int i = secilenindeskler.Count - 1; i >= 0; i--)
+            {
+                lstiller.Items.RemoveAt(secilenindeskler[i]);
+            }
+
+        }
+
+        private void btngeri_Click(object sender, EventArgs e)
+        {
+            var secilenindeskler = lstiller2.SelectedIndices;
+            if (secilenindeskler.Count <= 0)
+            {
+                MessageBox.Show(
+                    "aktarılacak il seciniz", "hata",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            foreach (int item in secilenindeskler)
+            {
+                lstiller.Items.Add(lstiller.Items[item]);
+
+
+            }
+            for (int i = secilenindeskler.Count - 1; i >= 0; i--)
+            {
+                lstiller2.Items.RemoveAt(secilenindeskler[i]);
+            }
+
+        }
+
+        private void lstiller_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (lstiller.SelectedItems.Count > 0)
+            {
+                lstiller.DoDragDrop(lstiller, DragDropEffects.Move);
+
+            }
+
+        }
+
+        private void lstiller2_DragOver(object sender, DragEventArgs e)
+        {
+            var tasınanData = e.Data.GetData(typeof(ListBox).FullName) as ListBox;
+
+            if (tasınanData != null)
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+
+        }
+
+        private void lstiller2_DragDrop(object sender, DragEventArgs e)
+        {
+            var tasınanData = e.Data.GetData(typeof(ListBox).FullName) as ListBox;
+            var secilenindeskler = tasınanData.SelectedIndices;
+            foreach (int item in secilenindeskler)
+            {
+                lstiller2.Items.Add(lstiller.Items[item]);
+            }
+            for (int i = secilenindeskler.Count - 1; i >= 0; i--)
+            {
+                lstiller.Items.RemoveAt(secilenindeskler[i]);
+            }
+
+        }
+
+
+        private void lstiller2_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (lstiller2.SelectedItems.Count > 0)
+            {
+                lstiller2.DoDragDrop(lstiller2, DragDropEffects.Move);
+
+            }
+        }
+
+
+
+
+        private void lstiller_DragOver(object sender, DragEventArgs e)
+        {
+            var tasınanData = e.Data.GetData(typeof(ListBox).FullName) as ListBox;
+
+            if (tasınanData != null)
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void lstiller_DragDrop(object sender, DragEventArgs e)
+        {
+            var tasinanData = e.Data.GetData(typeof(ListBox).FullName) as ListBox;
+
+            if(tasinanData!=null&& tasinanData==lstiller2)
+            {
+                var secilenindesler = lstiller2.SelectedIndices;
+                foreach(int item in secilenindesler)
+                {
+                    lstiller.Items.Add(lstiller2.Items[item]);
+                }
+                for(int i=secilenindesler.Count-1;i>=0;i--)
+                {
+                    lstiller2.Items.RemoveAt(secilenindesler[i]);
+                }
+                    
+            }
+        }
+
+        
+
+    }
+}
